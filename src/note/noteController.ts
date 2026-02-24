@@ -1,12 +1,14 @@
 
 
-import { Request,Response } from "express";
+import { NextFunction, Request,Response } from "express";
 import noteModel from "./noteModel";
 import envConfig from "../Config/config";
+import globalErrorHndling from "../MiddleWares/globalErrorHandling";
+import createHttpError from "http-errors";
 
-const createNote = async(req:Request,res:Response)=>{
+const createNote = async(req:Request,res:Response ,next:NextFunction)=>{
    try {
-    const file =req.file ?`${envConfig.backendurl},${req.file.filename}`:"";
+    const file =req.file ?`${envConfig.backendurl},${req.file.filename}`:" ";
     const {title ,subtitle,description}=req.body;
     if(!file || !title || !description){
         res.status(400).json({
@@ -26,7 +28,9 @@ const createNote = async(req:Request,res:Response)=>{
 
     })
    } catch (error) {
-    console.log("Note creation failed !!!");
+    console.log(error);
+     return next(createHttpError(500,'Error While creating note '))
+
 
     
    }
