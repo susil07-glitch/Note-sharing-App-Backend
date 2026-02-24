@@ -7,7 +7,7 @@ const globalErrorHndling =(err:HttpError,req:Request,res:Response,next:NextFunct
 const statusCode =err.statusCode || 500
 res.status(statusCode).json({
     message:err.message,
-    errorStack :envConfig.environment==="development " ?err.stack:"something went wrong "
+    errorStack :envConfig.environment==="development" ? err.stack:"something went wrong "
 
 
     

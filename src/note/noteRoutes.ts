@@ -4,7 +4,11 @@ import createNote from "./noteController"
 
 const noteRoute= express.Router()
 
-noteRoute.route("/create").post(createNote)
+import {multer,storage} from "./../MiddleWares/multerMiddleWare"
+
+const upload =multer({storage:storage})
+
+noteRoute.route("/create").post( upload.single("file"),createNote)
 
 export default noteRoute
 
