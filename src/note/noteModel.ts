@@ -8,14 +8,20 @@ const noteSchema = new mongoose.Schema<Note>({
         required:true
 
     },
-    subtitle:String,
+    subtitle:{
+        type:String
+    },
      
     description:{
         type:String,
         required:[true ,"Description must be  required "]
     },
-    file:String,
+    file:{
+        type:String
+    },
     
 },{timestamps:true})
 
-export default mongoose.model<Note>("Note",noteSchema)
+const note = mongoose.model("note",noteSchema);
+
+export default note;
