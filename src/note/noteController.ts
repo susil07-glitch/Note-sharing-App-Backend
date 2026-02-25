@@ -37,6 +37,23 @@ import fs from "fs";
 };
 
 
+// note featching controller //
+export const fetchNotes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const notes = await note.find();
+
+    
+    return res.status(200).json({
+      message: "Notes fetched successfully",
+      data: notes,
+    });
+  } catch (error) {
+    console.log(error);
+    return next(createHttpError(500, "Error While fetching notes "));
+  }
+};
+
+
 
 // deleteNote controller //
 

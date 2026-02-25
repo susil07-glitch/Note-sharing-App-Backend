@@ -1,6 +1,6 @@
 
 import express from "express"
-import {createNote ,deleteNote, updateNote} from "./noteController"
+import {createNote ,deleteNote, fetchNotes, updateNote} from "./noteController"
 
 
 const noteRoute= express.Router()
@@ -12,6 +12,7 @@ const upload =multer({storage:storage})
 noteRoute.route("/create").post( upload.single("file"),createNote)
 noteRoute.route("/delete/:id").delete(deleteNote)
 noteRoute.route("/update/:id").patch(upload.single("file"),updateNote)
+noteRoute.route("/getNotes").get(fetchNotes)
 
 
 export default noteRoute

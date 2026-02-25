@@ -15,6 +15,7 @@ connectToDatabase();
 app.use("/api/notes", noteRoute);
 app.use("/api/notes",noteRoute);
 app.use("/api/notes",noteRoute);
+app.use("/api/notes",noteRoute);
 
 
 
