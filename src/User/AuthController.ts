@@ -3,7 +3,6 @@ import user from "./AuthModel";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { IUser } from "./AuthTypes";
 
 // register user router //
 
@@ -14,6 +13,7 @@ export const registerUser = async (
 ) => {
   try {
     const { UserName, Password, Email } = req.body;
+
     if (!UserName || !Password || !Email) {
       res.status(400).json({
         message: "Please provide UserName ,Password and Email !!!",
@@ -54,20 +54,23 @@ export const registerUser = async (
   try {
     const { Email, Password } = req.body;
     if (!Email || !Password) {
-      res.status(400).json({
+       return  res.status(400).json({
         message: "Please provide Email and Password !!!",
       });
     }
-    const existUser :IUser | null = await user.findOne({ Email:Email });
+
+
+   const UserModel=await user.findOne({Email:Email})
     
 
-    if (!existUser) {
-      res.status(400).json({
+    if (!UserModel) {
+     return  res.status(400).json({
         message: "User Not Found. , Please Register First !!!",
       });
     }
 
-    const isPasswordMatch = await bcrypt.compare(Password, existUser.Password);
+    const isPasswordMatch = await bcrypt.compare(Password, UserModel.Password);
+
     if (!isPasswordMatch) {
       res.status(400).json({
         message: "Invalid Password !!!",
@@ -76,7 +79,7 @@ export const registerUser = async (
 
     const token = jwt.sign(
       {
-        id: existUser._id,
+        id:UserModel._id,
       },
       process.env.JWT_SECRET_KEY as string,
       { expiresIn: "1d" },
@@ -85,7 +88,7 @@ export const registerUser = async (
     res.status(200).json({
       message: "Login Successfull !!!",
       token: token,
-      data: existUser,
+      data:UserModel,
     });
   } catch (error) {
     return next(createHttpError(500, "Error while login user !!!"));

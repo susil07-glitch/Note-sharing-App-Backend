@@ -1,14 +1,9 @@
 
 
 export interface User{
-    UserName:String,
-    Password:String,
-    Email:String
+    UserName:string,
+    Password:string,
+    Email:string
 }
 
-import { Document } from "mongoose";
 
-export interface IUser extends Document {
-  Email: string;
-  Password: string;
-}

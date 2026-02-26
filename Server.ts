@@ -3,6 +3,7 @@ import connectToDatabase from "./src/Config/db";
 import express from "express";
 import noteRoute from "./src/note/noteRoutes";
 import globalErrorHndling from "./src/MiddleWares/globalErrorHandling";
+import authRoutes from "./src/User/AuthRoutes";
 const app = express();
 //middleware
 app.use(express.json());
@@ -16,6 +17,12 @@ app.use("/api/notes", noteRoute);
 app.use("/api/notes",noteRoute);
 app.use("/api/notes",noteRoute);
 app.use("/api/notes",noteRoute);
+
+// auth rotes //
+
+app.use("/api/notes",authRoutes);
+app.use("/api/notes",authRoutes);
+
 
 
 
