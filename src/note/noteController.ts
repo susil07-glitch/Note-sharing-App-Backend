@@ -5,9 +5,12 @@ import createHttpError from "http-errors";
 import note from "./noteModel";
 import fs from "fs";
 
-
-// createNote Controller //  
- export const createNote = async (req: Request, res: Response, next: NextFunction) => {
+// createNote Controller //
+export const createNote = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const file = req.file
       ? `${envConfig.backendurl}/${req.file.filename}`
@@ -33,16 +36,17 @@ import fs from "fs";
     console.log(error);
     return next(createHttpError(500, "Error While creating note "));
   }
-
 };
 
-
 // note featching controller //
-export const fetchNotes = async (req: Request, res: Response, next: NextFunction) => {
+export const fetchNotes = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const notes = await note.find();
 
-    
     return res.status(200).json({
       message: "Notes fetched successfully",
       data: notes,
@@ -53,12 +57,36 @@ export const fetchNotes = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-
+// single note featching controller //
+export const featchingSingleNote = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const noteToFetch = await note.findById(id);
+    if(!noteToFetch){
+      return next(createHttpError(404,"Note note Found !!!"))
+    }
+    res.status(201).json({
+      message: "Note Fetched successfully",
+      data: noteToFetch,
+    });
+  } catch (error) {
+    return next(
+      createHttpError(505, "something went wrong while fetching note"),
+    );
+  }
+};
 
 // deleteNote controller //
 
-
-export const deleteNote = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteNote = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const id = req.params.id;
     const noteToDelete = await note.findById(id);
@@ -66,34 +94,31 @@ export const deleteNote = async (req: Request, res: Response, next: NextFunction
       return next(createHttpError(404, "Note not found "));
     }
 
-     fs.unlink(`uploads/${noteToDelete.file}`,(error)=>{
-        if (error){
-            console.log(error)
-        }
-        else{
-            console.log("Note deleted Successfully !!!")
+    fs.unlink(`uploads/${noteToDelete.file}`, (error) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Note deleted Successfully !!!");
+      }
+    });
 
-        }
-     })
+    await note.findByIdAndDelete(id);
 
-       await note .findByIdAndDelete(id);
-
-       res.status(201).json({
-        message:"Note deleted successfully "
-
-       })
-
+    res.status(201).json({
+      message: "Note deleted successfully ",
+    });
   } catch (error) {
-
-    console.log(error)
+    console.log(error);
   }
 };
 
-
 // noteUpdate controller //
 
-
-export const updateNote = async (req: Request, res: Response, next: NextFunction) => {
+export const updateNote = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const id = req.params.id;
     const file = req.file
@@ -105,32 +130,25 @@ export const updateNote = async (req: Request, res: Response, next: NextFunction
       return next(createHttpError(404, "Note not found "));
     }
 
-     fs.unlink(`uploads/${noteToUpdate.file}`,(error)=>{
-        if (error){
-            console.log(error)
-        }
-        else{
-            console.log("Note update Successfully !!!")
+    fs.unlink(`uploads/${noteToUpdate.file}`, (error) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Note update Successfully !!!");
+      }
+    });
 
-        }
-     })
+    await note.findByIdAndUpdate(id, {
+      title: title,
+      subtitle: subtitle,
+      description: description,
+      file: file,
+    });
 
-       await note.findByIdAndUpdate(id,{
-        title:title,
-        subtitle:subtitle,
-        description:description,
-        file:file
-       })
-
-       res.status(201).json({
-        message:"Note updated successfully "
-
-       })
-
+    res.status(201).json({
+      message: "Note updated successfully ",
+    });
   } catch (error) {
-
-    console.log(error)
+    console.log(error);
   }
 };
-
-
